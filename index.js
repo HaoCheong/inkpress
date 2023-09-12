@@ -129,6 +129,26 @@ const display = async () => {
     console.log(chalk.bgWhite('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n'))
 }
 
+const checkReqFiles = () => {
+
+}
+
+// ========== Pre-start ==========
+
+// TODO - Check for requisite files
+
+// TODO - Fail if files do not exist
+
+// TODO - Create files when added an init
+
+// TODO - Get options and tags
+
+// TODO - Validate options and tags
+
+// ========== Running ==========
+
+// ========== Post ==========
+
 const options = getOptions()
 const tags = getTags()
 const responses = []
