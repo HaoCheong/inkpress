@@ -1,0 +1,2 @@
+{{ greeting }} {{ name 3 }}.
+You have been cordial invited to the {{ event }} 
