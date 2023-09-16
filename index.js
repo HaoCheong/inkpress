@@ -7,18 +7,24 @@ import gradient from 'gradient-string';
 import chalkAnimation from "chalk-animation";
 import figlet from 'figlet';
 
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-import fs from 'fs'
+import fs, { existsSync } from 'fs'
 import yaml from 'js-yaml'
+import { exit } from "process";
 
 // TODO - Checks if an option file and template file have been generated
 
 // TODO - Process options
 
+
 const getOptions = () => {
-    const optionPath = './options.yml'
-    const options = yaml.load(fs.readFileSync(optionPath, 'utf8'))
+    const options_path = resolve(__dirname, 'workspace/options.yml')
+    const options = yaml.load(fs.readFileSync(options_path, 'utf8'))
     return options
 }
 
@@ -32,8 +38,8 @@ const processTags = (tag) => {
 }
 
 const getTags = () => {
-    const templatePath = './template.txt'
-    const r_template = fs.readFileSync(templatePath, 'utf8');
+    const template_path = resolve(__dirname, 'workspace/template.txt')
+    const r_template = fs.readFileSync(template_path, 'utf8');
     const template_arr = r_template.split(' }}')
     const all_tags = template_arr.map((x) => {
         return x.split('{{ ')[1]
@@ -53,8 +59,8 @@ const getTitle = async () => {
 }
 
 const getTemplate = async () => {
-    const templatePath = './template.txt'
-    const r_template = fs.readFileSync(templatePath, 'utf8');
+    const template_path = resolve(__dirname, 'workspace/template.txt')
+    const r_template = fs.readFileSync(template_path, 'utf8');
     return r_template
 }
 
@@ -130,29 +136,92 @@ const display = async () => {
 }
 
 const checkReqFiles = () => {
+    // Check if the files exist
+    const options_path = resolve(__dirname, 'workspace/options.yml')
+    const template_path = resolve(__dirname, 'workspace/template.txt')
 
+    if (!fs.existsSync(options_path) || !fs.existsSync(template_path)) {
+        return false
+    }
+    return true
 }
+
+const init = () => {
+    if (process.argv[2] === "init") {
+        const workspace_path = resolve(__dirname, 'workspace')
+        const options_path = resolve(__dirname, 'workspace/options.yml')
+        const template_path = resolve(__dirname, 'workspace/template.txt')
+        if (checkReqFiles()) {
+            console.log(`
+Required files already exist
+To run inky, run the command:
+    inky
+            `)
+            exit(1)
+        }
+        fs.mkdirSync(workspace_path);
+        fs.writeFileSync(options_path, "")
+        fs.writeFileSync(template_path, "")
+
+        const msg = `Inky <:E`
+
+        console.log(
+            figlet.textSync(msg)
+        );
+
+        console.log(`
+Initialise complete: options.yml and template.txt added to workspace
+To begin, run the command:
+    inky
+        `);
+        exit(0)
+    }
+}
+
+const workspaceDiff = (options, tags) => {
+    const optionKeys = Object.keys(options).sort()
+    const tagOptions = [... new Set(tags.map((tag) => { return tag.split(" ")[0]}))].sort()
+    const diff = tagOptions.filter(tag => !optionKeys.includes(tag));
+    return diff
+    // return tagOptions.every(val => optionKeys.includes(val));
+}
+
 
 // ========== Pre-start ==========
 
+// Create files when added an init
+await init()
+
 // TODO - Check for requisite files
+if (!checkReqFiles()) {
+    console.error(`
+Unable to find required files
+Please initialise the workspace using the command:
+    inky init
+        `)
+    exit(1)
+}
 
-// TODO - Fail if files do not exist
-
-// TODO - Create files when added an init
-
-// TODO - Get options and tags
-
-// TODO - Validate options and tags
-
-// ========== Running ==========
-
-// ========== Post ==========
-
+// Get options and tags
 const options = getOptions()
 const tags = getTags()
+
+// Validate options and tags
+const validateWorkspace = workspaceDiff(options, tags)
+if (validateWorkspace.length > 0) {
+    console.error(`
+Template contain unrecognisable tags:
+Tags: ${validateWorkspace.join(" ")}
+    `)
+}
+
+// ========== Running ==========
 const responses = []
 const meta = {"Title": ""}
 
 meta.title = await getTitle()
 await runThrough()
+
+// ========== Post ==========
+
+
