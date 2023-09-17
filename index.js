@@ -179,7 +179,7 @@ const inputMulti = async (options, curr_tag_obj, answer) => {
     let next_answer = ""
     let new_answer = ""
 
-    for (let i = curr_tag_obj.args[0]; i > 0; i--){
+    for (let i = curr_tag_obj.args[0]; i !== 0; i--){
 
         switch (curr_tag_obj.option) {
             case "_manual":
@@ -190,11 +190,7 @@ const inputMulti = async (options, curr_tag_obj, answer) => {
                 break
         }
 
-        if (curr_tag_obj.args[0] < 0) {
-            console.log(chalk.yellow("Select DONE or continue adding\n"))
-        } else {
-            console.log(`Remaining: ${chalk.yellow(i)}\n`)
-        }
+        
 
         if (next_answer === "DONE") {
             return new_answer
@@ -209,6 +205,14 @@ const inputMulti = async (options, curr_tag_obj, answer) => {
         const new_response = [...responses, new_answer]
         const curr_writing = await getRecentWriting(new_response)
         display(curr_writing)
+        
+        if (i < 0) {
+            console.log(chalk.yellow("Select DONE or continue adding\n"))
+        } else {
+            console.log(`Remaining: ${chalk.yellow(i)}\n`)
+        }
+
+
     }
 
     return new_answer
