@@ -12,6 +12,7 @@ import { dirname, resolve } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const specialTags = ['_time', '_manual']
 
 import fs, { existsSync } from 'fs'
 import yaml from 'js-yaml'
@@ -20,8 +21,6 @@ import { exit } from "process";
 // TODO - Checks if an option file and template file have been generated
 
 // TODO - Process options
-
-
 const getOptions = () => {
     const options_path = resolve(__dirname, 'workspace/options.yml')
     const options = yaml.load(fs.readFileSync(options_path, 'utf8'))
@@ -58,6 +57,16 @@ const getTitle = async () => {
     return details.title
 }
 
+const inputConcat = async () => {
+    const res = await inquirer.prompt({
+        name: 'concat',
+        type: 'list',
+        message: 'Concatenate in one file? ',
+        choices: ["Yes", "No"],
+    })
+    return res.concat === "Yes"
+}
+
 const getTemplate = async () => {
     const template_path = resolve(__dirname, 'workspace/template.txt')
     const r_template = fs.readFileSync(template_path, 'utf8');
@@ -65,7 +74,7 @@ const getTemplate = async () => {
 }
 
 
-const getRecentWriting = async () => {
+const getRecentWriting = async (responses) => {
     // Get the most recent filled out writing
     let template = await getTemplate()
     const all_tags = getTags()
@@ -85,10 +94,15 @@ const manualInput = async () => {
     return details.manualPrompt
 }
 
+const getRandom = (choices) => {
+    console.log("CHOICE", choices)
+    const index = Math.floor(Math.random() * choices.length)
+    return choices[index]
+}
+
 const handleResponse = async (answer, choices) => {
     if (answer === "RANDOM") {
-        const index = Math.floor(Math.random() * choices.length)
-        return choices[index]
+        return getRandom(choices)
     } else if (answer === "MANUAL INPUT") {
         return await manualInput()
     } else {
@@ -97,38 +111,167 @@ const handleResponse = async (answer, choices) => {
 }
 
 const promptContinue = async () => {
+    const res = await inquirer.prompt({
+        name: 'continue',
+        type: 'list',
+        message: 'Continue writing? ',
+        choices: ["Yes", "No"],
+    })
+    return res.continue === "Yes"
+}
 
+const saveWriting = async (title, concat) => {
+
+    /**
+     * Save writing to a file (Title: title.txt)
+     */
+
+    const new_page_path = resolve(__dirname, `workspace/output/${title}.txt`)
+    const content = await getRecentWriting(responses)
+
+    if (!fs.existsSync(new_page_path)) {
+        fs.writeFileSync(new_page_path, '')
+    }
+    
+    if (concat) {
+        console.log(chalk.bgGreen(` +++ Appending to "${new_page_path}" +++ \n`))
+        fs.appendFileSync(new_page_path, `\n${content}`)
+    } else {
+        console.log(chalk.bgGreen(` +++ Saving to "${new_page_path}" +++ \n`))
+        fs.writeFileSync(new_page_path, content)
+    }
+    
+}
+
+const inputAnswers = async (options) => {
+
+    /**
+     * Selector of choices
+     */
+
+    const choices = options.concat(["", "RANDOM", "MANUAL INPUT", "CLEAR"])
+    const question = await inquirer.prompt({
+        name: 'answer',
+        type: 'list',
+        message: 'INPUT: ',
+        choices: choices,
+    })
+    return question.answer
+}
+
+const getTime = () => {
+
+    /**
+     * Get current time as a localeString
+     */
+
+    const currDatetime = new Date()
+    return currDatetime.toLocaleString()
+}
+
+const inputMulti = async (options, curr_tag_obj, answer) => {
+
+    /**
+     * Recursive input for multiple of the same tag
+     */
+
+    const delim = curr_tag_obj.args[1]
+    let next_answer = ""
+
+    if (curr_tag_obj.args[0] === 0) {
+        return answer
+    }
+
+    switch (curr_tag_obj.option) {
+        case "_manual":
+            next_answer = await manualInput()
+            break
+        default:
+            next_answer = await inputAnswers(options[curr_tag_obj.option].concat(['','DONE']))
+            break
+    }
+
+    if (next_answer === "") {
+        await inputMulti(options, curr_tag_obj, answer)
+    }
+
+    if (next_answer === "DONE") {
+        return answer
+    }
+    
+    curr_tag_obj.args[0] = curr_tag_obj.args[0] - 1
+    if (delim === "\\n") {
+        answer = `${answer} \n ${next_answer}`
+    } else {
+        answer = `${answer} ${delim} ${next_answer}`
+    }
+
+    const new_response = [...responses, answer]
+    const curr_writing = await getRecentWriting(new_response)
+    display(curr_writing)
+    if (curr_tag_obj.args[0] < 0) {
+        console.log(chalk.yellow("Select DONE or continue adding\n"))
+    } else {
+        console.log(`Remaining: ${chalk.yellow(curr_tag_obj.args[0])}\n`)
+    }
+    return await inputMulti(options, curr_tag_obj, answer)
+    
 }
 
 const runThrough = async () => {
-    //Runs through all the tags
-    await display()
+
+    /**
+     * Runs through all the tags
+    */
+
+    const curr_writing = await getRecentWriting(responses)
+    await display(curr_writing)
     if (tags.length === 0) {
         return
     }
     const curr_tag_raw = tags[0]
     const curr_tag_obj = processTags(curr_tag_raw)
-    const choices = options[curr_tag_obj.option].concat(["", "RANDOM", "MANUAL INPUT", "CLEAR"])
-    const question = await inquirer.prompt({
-        name: 'answer',
-        type: 'list',
-        message: 'Input: ',
-        choices: choices,
-    })
-    if (question.answer === "") {
+    let answer = ""
+
+    // Special case tags check
+    switch (curr_tag_obj.option) {
+        case "_time":
+            answer = getTime()
+            break
+        case "_manual":
+            answer = await manualInput()
+            break
+    }
+
+    // Check type if no answer
+    if (answer === "") {
+        switch (curr_tag_obj.type) {
+            case "-r":
+                answer = getRandom(options[curr_tag_obj.option])
+                break
+            case "-l":
+                answer = await inputMulti(options, curr_tag_obj, answer)
+                break
+            default:
+                answer = await inputAnswers(options[curr_tag_obj.option])
+                break
+        }
+    }
+
+    if (answer === "") {
         await runThrough()
     }
-    const response = await handleResponse(question.answer, options[curr_tag_obj.option])
+
+    const response = await handleResponse(answer)
     responses.push(response)
     tags.shift()
 
     await runThrough()
 }
 
-const display = async () => {
+const display = async (writing) => {
     // Display the current outputs
     console.clear()
-    const writing = await getRecentWriting()
     console.log(`${chalk.bold("Title")}: ${meta.title}`)
     console.log(chalk.bgWhite('<<<<<<<<<<<<<<<<<<<< CURRENT >>>>>>>>>>>>>>>>>>>>\n'))
     console.log(`${writing}\n`)
@@ -136,7 +279,9 @@ const display = async () => {
 }
 
 const checkReqFiles = () => {
-    // Check if the files exist
+    /**
+     * Check if the files exist
+    */
     const options_path = resolve(__dirname, 'workspace/options.yml')
     const template_path = resolve(__dirname, 'workspace/template.txt')
 
@@ -147,8 +292,13 @@ const checkReqFiles = () => {
 }
 
 const init = () => {
+    /**
+     * Initialisation
+     */
+
     if (process.argv[2] === "init") {
         const workspace_path = resolve(__dirname, 'workspace')
+        const output_path = resolve(__dirname, 'workspace/output')
         const options_path = resolve(__dirname, 'workspace/options.yml')
         const template_path = resolve(__dirname, 'workspace/template.txt')
         if (checkReqFiles()) {
@@ -160,6 +310,7 @@ To run inky, run the command:
             exit(1)
         }
         fs.mkdirSync(workspace_path);
+        fs.mkdirSync(output_path);
         fs.writeFileSync(options_path, "")
         fs.writeFileSync(template_path, "")
 
@@ -178,12 +329,22 @@ To begin, run the command:
     }
 }
 
-const workspaceDiff = (options, tags) => {
+const tagsDiff = (options, tags) => {
+    /**
+     * Return the difference in tags between options on template files
+     */
+    
     const optionKeys = Object.keys(options).sort()
-    const tagOptions = [... new Set(tags.map((tag) => { return tag.split(" ")[0]}))].sort()
+
+    //Get a set of tags removing dupes
+    const allTags = [... new Set(tags.map((tag) => { return tag.split(" ")[0]}))].sort()
+
+    //Filter out any special tags
+    const tagOptions = allTags.filter(tag => !specialTags.includes(tag))
+
+    //Get the difference between tagOption and optionKeys
     const diff = tagOptions.filter(tag => !optionKeys.includes(tag));
     return diff
-    // return tagOptions.every(val => optionKeys.includes(val));
 }
 
 
@@ -203,25 +364,50 @@ Please initialise the workspace using the command:
 }
 
 // Get options and tags
-const options = getOptions()
-const tags = getTags()
+let options = getOptions()
+let tags = getTags()
 
 // Validate options and tags
-const validateWorkspace = workspaceDiff(options, tags)
+const validateWorkspace = tagsDiff(options, tags)
 if (validateWorkspace.length > 0) {
     console.error(`
 Template contain unrecognisable tags:
 Tags: ${validateWorkspace.join(" ")}
     `)
+    exit(1)
 }
 
+
 // ========== Running ==========
-const responses = []
-const meta = {"Title": ""}
+let responses = []
+const meta = {title: "", continue: true, concat: false}
 
 meta.title = await getTitle()
-await runThrough()
+meta.concat = await inputConcat()
+
+while (meta.continue) {
+
+    await runThrough()
+    await saveWriting(meta.title, meta.concat)
+
+    responses = []
+    options = getOptions()
+    tags = getTags()
+    
+    meta.continue = await promptContinue()
+    if (meta.continue && !meta.concat) {
+        meta.title = await getTitle()
+    }
+}
 
 // ========== Post ==========
 
 
+/** EXTRA
+ * TODO - Create a validate function to validate all files (Add no tagless templates)
+ * TODO - Move all input prompts to inputs.js
+ * TODO - Rename all inputs into input<prompt>() instead
+ * TODO - Move all basic getters into getters
+ * TODO - Add JS Docs to all of them
+ * TODO - Convert all snake case to camel case
+ */
