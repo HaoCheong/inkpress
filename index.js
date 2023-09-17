@@ -177,44 +177,41 @@ const inputMulti = async (options, curr_tag_obj, answer) => {
 
     const delim = curr_tag_obj.args[1]
     let next_answer = ""
+    let new_answer = ""
 
-    if (curr_tag_obj.args[0] === 0) {
-        return answer
+    for (let i = curr_tag_obj.args[0]; i > 0; i--){
+
+        switch (curr_tag_obj.option) {
+            case "_manual":
+                next_answer = await manualInput()
+                break
+            default:
+                next_answer = await inputAnswers(options[curr_tag_obj.option].concat(['','DONE']))
+                break
+        }
+
+        if (curr_tag_obj.args[0] < 0) {
+            console.log(chalk.yellow("Select DONE or continue adding\n"))
+        } else {
+            console.log(`Remaining: ${chalk.yellow(i)}\n`)
+        }
+
+        if (next_answer === "DONE") {
+            return new_answer
+        }
+        
+        if (delim === "\\n") {
+            new_answer = `${new_answer} \n ${next_answer}`
+        } else {
+            new_answer = `${new_answer} ${delim} ${next_answer}`
+        }
+
+        const new_response = [...responses, new_answer]
+        const curr_writing = await getRecentWriting(new_response)
+        display(curr_writing)
     }
 
-    switch (curr_tag_obj.option) {
-        case "_manual":
-            next_answer = await manualInput()
-            break
-        default:
-            next_answer = await inputAnswers(options[curr_tag_obj.option].concat(['','DONE']))
-            break
-    }
-
-    if (next_answer === "") {
-        await inputMulti(options, curr_tag_obj, answer)
-    }
-
-    if (next_answer === "DONE") {
-        return answer
-    }
-    
-    curr_tag_obj.args[0] = curr_tag_obj.args[0] - 1
-    if (delim === "\\n") {
-        answer = `${answer} \n ${next_answer}`
-    } else {
-        answer = `${answer} ${delim} ${next_answer}`
-    }
-
-    const new_response = [...responses, answer]
-    const curr_writing = await getRecentWriting(new_response)
-    display(curr_writing)
-    if (curr_tag_obj.args[0] < 0) {
-        console.log(chalk.yellow("Select DONE or continue adding\n"))
-    } else {
-        console.log(`Remaining: ${chalk.yellow(curr_tag_obj.args[0])}\n`)
-    }
-    return await inputMulti(options, curr_tag_obj, answer)
+    return new_answer
     
 }
 
