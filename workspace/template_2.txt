@@ -1,0 +1,11 @@
+# COMP6441 Week 1 Marking:
+### Student: {{ _manual }}
+### Time: {{ _time }}
+
+## Breadth
+### Marks: {{ marks }}/3
+### Comments:
+{{ preamb }}.
+{{ classic -l 3 \n }}
+{{ _manual }}
+{{ postamb -r }}

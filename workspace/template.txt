@@ -1,11 +1,2 @@
-# COMP6441 Week 1 Marking:
-### Student: {{ _manual }}
-### Time: {{ _time }}
-
-## Breadth
-### Marks: {{ marks }}/3
-### Comments:
-{{ preamb }}.
-{{ classic -l 3 \n }}
-{{ _manual }}
-{{ postamb -r }}
+{{ greeting }} {{ name -l 3 + }}.
+You have been cordial invited to the {{ event }} 
