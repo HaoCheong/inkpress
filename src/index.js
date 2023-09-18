@@ -54,7 +54,7 @@ const saveWriting = async (title, concat, responses) => {
    * Save writing to a file (Title: title.txt)
    */
 
-  const new_page_path = resolve(__dirname, `workspace/output/${title}.txt`);
+  const new_page_path = resolve(__dirname, `../workspace/output/${title}.txt`);
   const content = await generateRecentWriting(responses);
 
   if (!fs.existsSync(new_page_path)) {
@@ -101,14 +101,14 @@ const runThrough = async (options, tags, meta) => {
         break;
     }
 
-    // Check type if no answer
+    // Check tag types
     if (answer === "") {
       switch (curr_tag_obj.type) {
         case "-r":
           answer = selectRandomChoice(options[curr_tag_obj.option]);
           break;
         case "-l":
-          answer = await inputMulti(options, curr_tag_obj, meta);
+          answer = await inputMulti(options, curr_tag_obj, meta, responses);
           break;
         default:
           answer = await inputAnswers(options[curr_tag_obj.option]);
@@ -126,7 +126,7 @@ const runThrough = async (options, tags, meta) => {
     tag_counter += 1;
   }
 
-  await saveWriting(meta.title, meta.concat);
+  await saveWriting(meta.title, meta.concat, responses);
 };
 
 const init = () => {
@@ -144,10 +144,14 @@ const init = () => {
       exit(1);
     }
     const paths = getAbsolutePaths();
+    const defaultOptions = resolve(__dirname, `./_default/options.yml`);
+    const defaultTemplate = resolve(__dirname, `./_default/template.txt`);
     fs.mkdirSync(paths.workspacePath);
     fs.mkdirSync(paths.outputPath);
     fs.writeFileSync(paths.optionsPath, "");
     fs.writeFileSync(paths.templatePath, "");
+    fs.copyFileSync(defaultOptions, paths.optionsPath);
+    fs.copyFileSync(defaultTemplate, paths.templatePath);
 
     const msg = `Inky <:E`;
     console.log(figlet.textSync(msg));
@@ -193,7 +197,6 @@ const main = async () => {
     //Reset all values
     options = getOptions();
     tags = getTags();
-    responses = [];
 
     //Get continue
     meta.continue = await inputContinue();

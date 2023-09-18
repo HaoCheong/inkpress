@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
-import { generateRecentWriting } from "./helpers.js";
+import { generateRecentWriting, display, handleResponse } from "./helpers.js";
 
 export const inputTitle = async () => {
   /**
@@ -61,7 +61,7 @@ export const inputAnswers = async (options) => {
    * Selector of choices
    */
 
-  const choices = options.concat(["", "RANDOM", "MANUAL INPUT", "CLEAR"]);
+  const choices = options.concat(["", "RANDOM", "MANUAL INPUT"]);
   const question = await inquirer.prompt({
     name: "answer",
     type: "list",
@@ -71,9 +71,9 @@ export const inputAnswers = async (options) => {
   return question.answer;
 };
 
-export const inputMulti = async (options, curr_tag_obj, meta) => {
+export const inputMulti = async (options, curr_tag_obj, meta, responses) => {
   /**
-   * Recursive input for multiple of the same tag
+   * Iterative input for multiple of the same tag
    */
 
   const delim = curr_tag_obj.args[1];
@@ -96,6 +96,8 @@ export const inputMulti = async (options, curr_tag_obj, meta) => {
       return new_answer;
     }
 
+    new_answer = await handleResponse(new_answer, options[curr_tag_obj.option]);
+
     if (delim === "\\n") {
       new_answer = `${new_answer} \n ${next_answer}`;
     } else {
@@ -109,7 +111,7 @@ export const inputMulti = async (options, curr_tag_obj, meta) => {
     if (i < 0) {
       console.log(chalk.yellow("Select DONE or continue adding\n"));
     } else {
-      console.log(`Remaining: ${chalk.yellow(i)}\n`);
+      console.log(`Remaining: ${chalk.yellow(i - 1)}\n`);
     }
   }
 
