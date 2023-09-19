@@ -1,0 +1,27 @@
+# Templating showcase
+
+This template showcases all the features and different tags with examples!
+To test specific parts of the template, simply remove the rest from the template.
+Add your own options to the options.yml if you want to see them
+
+## Basic Templating
+Yo!, are you thirsty??
+
+## Special Tags:
+Your name: Something
+The time is: 19/09/2023, 3:30:58 pm
+
+## Random selection
+Your fortune is: May god forgive you on this wretched day
+
+## Looping tags (Finite)
+What are your top 3 favourite animals:
+ and Lion and Tiger and Tiger
+
+## Looping tags (Infinite)
+What are all your favourite fruits as list:
+ 
+ Pear 
+ Banana 
+ Banana 
+ Tomato
