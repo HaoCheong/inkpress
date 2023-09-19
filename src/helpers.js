@@ -74,14 +74,17 @@ export const parseTags = (tag) => {
 };
 
 export const display = (writing, meta) => {
-  // Display the current outputs
+  /**
+   * Display content in a terminal box
+   */
+
   console.clear();
   console.log(`${chalk.bold("Title")}: ${meta.title}`);
   console.log(
-    chalk.bgWhite("<<<<<<<<<<<<<<<<<<<< CURRENT >>>>>>>>>>>>>>>>>>>>\n")
+    chalk.bgBlue("<<<<<<<<<<<<<<<<<<<< CURRENT >>>>>>>>>>>>>>>>>>>>\n")
   );
   console.log(`${writing}\n`);
   console.log(
-    chalk.bgWhite("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
+    chalk.bgBlue("<<<<<<<<<<<<<<<<<<<<<< END >>>>>>>>>>>>>>>>>>>>>>\n")
   );
 };

@@ -100,6 +100,7 @@ const runThrough = async (options, tags, meta) => {
         answer = await inputManual();
         break;
     }
+    console.log("answer", answer)
 
     // Check tag types
     if (answer === "") {
@@ -111,11 +112,13 @@ const runThrough = async (options, tags, meta) => {
           answer = await inputMulti(options, curr_tag_obj, meta, responses);
           break;
         default:
+          console.log("HERE 3", curr_tag_obj, options, options[curr_tag_obj.option])
           answer = await inputAnswers(options[curr_tag_obj.option]);
           break;
       }
     }
 
+    console.log("answer 2", answer)
     if (answer === "") {
       continue;
     }

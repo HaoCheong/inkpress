@@ -61,6 +61,10 @@ export const inputAnswers = async (options) => {
    * Selector of choices
    */
 
+  if (options === undefined) {
+    return ""
+  }
+
   const choices = options.concat(["", "RANDOM", "MANUAL INPUT"]);
   const question = await inquirer.prompt({
     name: "answer",
