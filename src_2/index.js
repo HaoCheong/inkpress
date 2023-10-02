@@ -58,6 +58,8 @@ const generateRecentWriting = (responses) => {
     /**
      * Given the responses, generate the writing via tag replacement
      */
+
+    console.log("asdashdkasasqwd", responses)
   
     let template = getTemplate();
     const all_tags = getTags();
@@ -254,7 +256,7 @@ const inputAnswers = async (options) => {
       return ""
     }
   
-    const choices = options.concat(["", "RANDOM", "MANUAL INPUT"]);
+    const choices = options.concat(["", "RANDOM", "MANUAL INPUT", ""]);
     const question = await inquirer.prompt({
         name: "answer",
         type: "list",
@@ -266,9 +268,9 @@ const inputAnswers = async (options) => {
         return selectRandomChoice(options);
     } else if (question.answer === "MANUAL INPUT") {
         return inputManual()
-    } else {
-        return question.answer;
     }
+
+    return question.answer;
     
 };
   
@@ -282,24 +284,59 @@ const checkResponse = (resp) => {
 
 }
 
-const repeatedChoice = async (options, curr_tag_obj, repeatCount) => {
-    console.log("HERE")
+export const getTime = () => {
+    /**
+     * Get current time as a localeString
+     */
+  
+    const currDatetime = new Date();
+    return currDatetime.toLocaleString();
+  };
+
+const repeatedChoice = async (options, curr_tag_obj, repeatCount, responses, meta) => {
+    
     let resp_arr = []
     let counter = repeatCount
     let resp = ""
-    const delim = curr_tag_obj.args[1]
-    while (counter !== 0 || resp !== "DONE") {
-        let resp = ""
-        if (curr_tag_obj.option === "_manual") {
-            man_res = await inputManual();
-            resp_arr.push(man_res)
-            resp = resp_arr.join(delim)
+    let delim = ""
+
+    if (curr_tag_obj.type !== undefined) {
+        delim = curr_tag_obj.args[1]
+        if (delim === "\\n") {
+            delim = "\n"
         } else {
-            resp = await inputAnswers(options[curr_tag_obj.option])
-            resp_arr.push(resp)
+            delim = ` ${delim} `
         }
-        counter--
     }
+
+    let curr_resp = ""
+    while (counter !== 0) {
+
+        if (curr_tag_obj.option === "_manual") {
+            curr_resp = await inputManual();
+        } else {
+            curr_resp = await inputAnswers(options[curr_tag_obj.option].concat(["", "DONE"])) 
+        }
+
+        if (curr_resp === "DONE") {
+            break
+        }
+
+        if (curr_resp !== "") {
+            resp_arr.push(curr_resp)
+            counter -= 1
+        }
+
+        let temp_resp = resp_arr.join(delim)
+        let temp_responses = [...responses]
+        temp_responses.push(temp_resp)
+        let temp_writing = generateRecentWriting(temp_responses)
+        console.log("TEMPO", temp_writing)
+        display(temp_writing, meta)
+
+    }
+    resp = resp_arr.join(delim)
+    return resp
 
 }
 
@@ -340,6 +377,37 @@ const getOptions = () => {
     return tags_raw;
   };
 
+export const selectRandomChoice = (choices) => {
+/**
+ * Get a random answer from the given option list
+ */
+
+const index = Math.floor(Math.random() * choices.length);
+return choices[index];
+};
+
+const saveWriting = async (title, concat, responses) => {
+    /**
+     * Save writing to a file (Title: title.txt)
+     */
+  
+    const new_page_path = resolve(__dirname, `../workspace/output/${title}.txt`);
+    const content = await generateRecentWriting(responses);
+  
+    if (!fs.existsSync(new_page_path)) {
+      fs.writeFileSync(new_page_path, "");
+    }
+  
+    if (concat) {
+      console.log(chalk.bgGreen(` +++ Appending to "${new_page_path}" +++ \n`));
+      fs.appendFileSync(new_page_path, `\n${content}`);
+    } else {
+      console.log(chalk.bgGreen(` +++ Saving to "${new_page_path}" +++ \n`));
+      fs.writeFileSync(new_page_path, content);
+    }
+  };
+  
+
 const main = async () => {
 
     // Initialisation check
@@ -353,16 +421,18 @@ const main = async () => {
     meta.title = await inputTitle();
     let options = getOptions();
     let tags = getTags();
+
     validateWorkspace(options, tags, meta);
 
     meta.concat = await inputConcat();
     while (meta.continue) {
 
+        let responses = [];
         while (tags.length > 0) {
             let tag_counter = 0;
-            let responses = [];
+            
 
-            const curr_writing = generateRecentWriting(responses);
+            let curr_writing = generateRecentWriting(responses);
             display(curr_writing, meta);
 
             const curr_tag_raw = tags[tag_counter];
@@ -371,7 +441,7 @@ const main = async () => {
             // Check special tags
             switch (curr_tag_obj.option) {
                 case "_time":
-                    answer = getTime();
+                    let answer = getTime();
                     responses.push(answer);
                     tags.shift();
                     tag_counter += 1;
@@ -386,14 +456,23 @@ const main = async () => {
                     break;
                 case "-l":
                     //Repeated input
-                    resp = await repeatedChoice(options, curr_tag_obj, curr_tag_obj.args[0])
+                    resp = await repeatedChoice(options, curr_tag_obj, curr_tag_obj.args[0], responses, meta)
                     break
                 default:
                     //Single Choice
-                    resp = await repeatedChoice(options, curr_tag_obj, 1)
+                    resp = await repeatedChoice(options, curr_tag_obj, 1, responses, meta)
                     break
             }
+            responses.push(resp)
+            tags.shift();
+            tag_counter += 1;
+
+            curr_writing = generateRecentWriting(responses);
+            display(curr_writing, meta);
         }
+        await saveWriting(meta.title, meta.concat, responses);
+        options = getOptions();
+        tags = getTags();
     }
 }
 
