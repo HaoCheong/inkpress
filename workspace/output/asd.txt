@@ -1,0 +1,89 @@
+
+# Templating showcase
+
+This template showcases all the features and different tags with examples!
+To test specific parts of the template, simply remove the rest from the template.
+Add your own options to the options.yml if you want to see them
+
+## Basic Templating
+Yo!, are you sick of the establishment??
+
+## Special Tags:
+Your name: asd
+The time is: 10/2/2023, 8:38:21 PM
+
+## Random selection
+Your fortune is: May god forgive you on this wretched day
+
+## Looping tags (Finite)
+What are your top 3 favourite animals:
+Lion and Rhino and Tiger
+
+## Looping tags (Infinite)
+What are all your favourite fruits as list:
+Apple
+Pear
+Pear
+
+## BIG test
+Wow - This - Is  - Actually - amazing - DONE
+
+# Templating showcase
+
+This template showcases all the features and different tags with examples!
+To test specific parts of the template, simply remove the rest from the template.
+Add your own options to the options.yml if you want to see them
+
+## Basic Templating
+Yo!, are you tired??
+
+## Special Tags:
+Your name: qwd
+The time is: 10/2/2023, 8:41:26 PM
+
+## Random selection
+Your fortune is: May god forgive you on this wretched day
+
+## Looping tags (Finite)
+What are your top 3 favourite animals:
+Otters and Snakes and Lion
+
+## Looping tags (Infinite)
+What are all your favourite fruits as list:
+DONE
+
+## BIG test
+asd - asd - asd - asd - as - da - ds - DONE
+
+# Templating showcase
+
+This template showcases all the features and different tags with examples!
+To test specific parts of the template, simply remove the rest from the template.
+Add your own options to the options.yml if you want to see them
+
+## Basic Templating
+Yo!, are you tired??
+
+## Special Tags:
+Your name: asd
+The time is: 10/2/2023, 8:43:08 PM
+
+## Random selection
+Your fortune is: Mild, its going to be a mild day
+
+## Looping tags (Finite)
+What are your top 3 favourite animals:
+Lion and Tiger
+
+## Looping tags (Infinite)
+What are all your favourite fruits as list:
+Apple
+Pear
+Banana
+Banana
+Pear
+Pear
+Pear
+
+## BIG test
+ads - asd - asd - as - da - sda - sd - as - d - sd

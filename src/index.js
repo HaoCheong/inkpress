@@ -199,7 +199,7 @@ const main = async () => {
 
     //Reset all values
     options = getOptions();
-    tags = getTags();
+    tags = getTags(); 
 
     //Get continue
     meta.continue = await inputContinue();

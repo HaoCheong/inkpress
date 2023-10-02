@@ -21,3 +21,6 @@ What are your top 3 favourite animals:
 ## Looping tags (Infinite)
 What are all your favourite fruits as list:
 {{ fruits -l -1 \n }}
+
+## BIG test
+{{ _manual -l -1 - }}
