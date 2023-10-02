@@ -59,8 +59,6 @@ const generateRecentWriting = (responses) => {
      * Given the responses, generate the writing via tag replacement
      */
 
-    console.log("asdashdkasasqwd", responses)
-  
     let template = getTemplate();
     const all_tags = getTags();
   
@@ -109,7 +107,7 @@ if (!checkReqFiles()) {
         Please initialise the workspace using the command:
             inky init
         `);
-    exit(1);
+    process.exit(1);
 }
 };
 
@@ -125,7 +123,7 @@ const init = () => {
             To run inky, run the command:
                 inky
                 `);
-            exit(1);
+            process.exit(1);
         }
         const paths = getAbsolutePaths();
         const defaultOptions = resolve(__dirname, `./_default/options.yml`);
@@ -145,7 +143,7 @@ const init = () => {
         To begin, run the command:
             inky
             `);
-        exit(0);
+        process.exit(0);
     }
 };
 
@@ -160,14 +158,14 @@ const validateWorkspace = (options, tags, meta) => {
       console.error(`
     Title cannot be empty string
         `);
-      exit(1);
+      process.exit(1);
     }
   
     if (tags.length < 1) {
       console.error(`
     Empty template detected, add tags into "${paths.templatePath}" to continue
         `);
-      exit(1);
+      process.exit(1);
     }
   
     Object.keys(options).forEach((key) => {
@@ -175,7 +173,7 @@ const validateWorkspace = (options, tags, meta) => {
         console.error(`
     Empty options detected, please add options into "${paths.optionsPath} to continue"
           `);
-        exit(1);
+        process.exit(1);
       }
     });
   
@@ -184,7 +182,7 @@ const validateWorkspace = (options, tags, meta) => {
     Template contain unrecognisable tags:
     Tags: ${validateWorkspace.join(" ")}
         `);
-      exit(1);
+      process.exit(1);
     }
 };
 
