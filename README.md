@@ -53,7 +53,6 @@ For non-special tags, they can be given options along with certain values depend
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `{{ tag -r }}`                 | Randomly select from the options provided by the tag                                                                                                                                             |
 | `{{ tag -l <count> <delim> }}` | Allow you to loop the same options by a specific count and deliminated by a specifc deliminator. For infinite looping, use a negative number for the count. Select DONE to terminate the looping |
->>>>>>> 82ff817a0a10cd522df66d58353a031bd6e0915f
 
 ## Options Writing
 
