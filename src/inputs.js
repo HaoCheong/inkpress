@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+import chalk from "chalk";
 
 import {
   display,
@@ -105,6 +106,11 @@ export const repeatedChoice = async (options, curr_tag_obj, repeatCount, respons
     let curr_resp = ""
     while (counter !== 0) {
 
+        if (counter > 0) {
+            console.log(chalk.yellow(`Remaining Inputs: ${counter}`))
+        } else {
+            console.log(chalk.yellow("Select or type DONE when you are done selection"))
+        }
         if (curr_tag_obj.option === "_manual") {
             curr_resp = await inputManual();
         } else {
@@ -124,7 +130,6 @@ export const repeatedChoice = async (options, curr_tag_obj, repeatCount, respons
         let temp_responses = [...responses]
         temp_responses.push(temp_resp)
         let temp_writing = generateRecentWriting(temp_responses)
-        console.log("TEMPO", temp_writing)
         display(temp_writing, meta)
 
     }
