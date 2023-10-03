@@ -1,5 +1,6 @@
 
 import figlet from "figlet";
+import chalk from "chalk"
 
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
@@ -150,9 +151,10 @@ const main = async () => {
         meta.continue = await inputContinue()
 
         // Prompt for new title if concatenation is not selected
-        console.log(chalk.yellow(`If the title already exist in output, the file WILL BE OVERWRITTEN`))
+        
         if (!meta.concat && meta.continue) {
-          meta.title = await inputTitle();
+            console.log(chalk.yellow(`If the title already exist in output, the file WILL BE OVERWRITTEN`))
+            meta.title = await inputTitle();
         }
     }
 }
