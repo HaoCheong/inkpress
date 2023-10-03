@@ -47,12 +47,12 @@ Below are table of a tags and special tags denoted by an underscore `_tag` that 
 | `{{ \_time }}`   | Returns the current time                                          |
 | `{{ \_manual }}` | Forces a manual input                                             |
 
-For non-special tags, they can be given options along with certain values depending on the input
+Tags can also be given options flags along with certain values depending on the input. Some flags will not have any affect on certain special tags.
 
 | Options                      | Descriptions                                                                                                                                                                                     |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `{{ tag -r }}`                 | Randomly select from the options provided by the tag                                                                                                                                             |
-| `{{ tag -l <count> <delim> }}` | Allow you to loop the same options by a specific count and deliminated by a specifc deliminator. For infinite looping, use a negative number for the count. Select DONE to terminate the looping |
+| `{{ tag -l <count> <delim> }}` | Allow you to loop the same options by a specific count and deliminated by a specifc deliminator (limited to one character or newline character). For infinite looping, use a negative number for the count. Select DONE to terminate the looping |
 
 ## Options Writing
 
@@ -61,6 +61,8 @@ Options are the selection which is tag is associated with.
 For example:
 
 ```yaml
+
+# options.yml file
 greeting:
   - "Yo!"
   - "Hello, "
@@ -72,4 +74,10 @@ affect:
   - "sick of the establishment?"
 ```
 
-You can add new option tags as well as selections for each tag
+```
+# template.txt file
+
+{{ greeting }}, lemme guess you are {{ affect }}
+```
+
+You can add new option tags as well as selections for each tag.
