@@ -44,15 +44,16 @@ Below are table of a tags and special tags denoted by an underscore `_tag` that 
 | Tags           | Descriptions                                                      |
 | -------------- | ----------------------------------------------------------------- |
 | `{{ tag }}`     | Simple tag, will match to the same key as seen in the options.yml |
-| `{{ \_time }}`  | Returns the current time                                          |
+| `{{ \_time }}`   | Returns the current time                                          |
 | `{{ \_manual }}` | Forces a manual input                                             |
 
 For non-special tags, they can be given options along with certain values depending on the input
 
 | Options                      | Descriptions                                                                                                                                                                                     |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `{{ tag -r }}`               | Randomly select from the options provided by the tag                                                                                                                                             |
-| `{{ tag -l <count> <delim> }}` | Allow you to loop the same options by a specific count and deliminated by a specifc deliminator. For infinite looping, use a negative number for the count. Select or type DONE to terminate the looping |
+| `{{ tag -r }}`                 | Randomly select from the options provided by the tag                                                                                                                                             |
+| `{{ tag -l <count> <delim> }}` | Allow you to loop the same options by a specific count and deliminated by a specifc deliminator. For infinite looping, use a negative number for the count. Select DONE to terminate the looping |
+>>>>>>> 82ff817a0a10cd522df66d58353a031bd6e0915f
 
 ## Options Writing
 
