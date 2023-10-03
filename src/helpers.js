@@ -15,6 +15,7 @@ import {
     getTemplate,
     getTags,
 } from "./getters.js"
+
 export const display = (writing, meta) => {
     /**
      * Display content in a terminal box
@@ -49,6 +50,7 @@ export const checkReqFiles = () => {
     /**
      * Check if all the required files exist
      */
+
     const paths = getAbsolutePaths();
     return (
         fs.existsSync(paths.workspacePath) &&

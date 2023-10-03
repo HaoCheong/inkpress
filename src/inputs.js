@@ -88,7 +88,11 @@ export const inputManual = async () => {
 };
 
 export const repeatedChoice = async (options, curr_tag_obj, repeatCount, responses, meta) => {
-    
+
+    /**
+     * Get user inputs and choices, will repeat X amount of times depending on option
+     */
+
     let resp_arr = []
     let counter = repeatCount
     let resp = ""
@@ -106,33 +110,40 @@ export const repeatedChoice = async (options, curr_tag_obj, repeatCount, respons
     let curr_resp = ""
     while (counter !== 0) {
 
+        //Display the remaining count counter
         if (counter > 0) {
             console.log(chalk.yellow(`Remaining Inputs: ${counter}`))
+            console.log(chalk.yellow(`Select or type DONE if you wanna end early\n`))
         } else {
-            console.log(chalk.yellow("Select or type DONE when you are done selection"))
+            console.log(chalk.yellow("Select or type DONE when you are done selection\n"))
         }
+
+        // Checks the type for the tag
         if (curr_tag_obj.option === "_manual") {
             curr_resp = await inputManual();
         } else {
             curr_resp = await inputAnswers(options[curr_tag_obj.option].concat(["", "DONE"])) 
         }
 
+        // Break case for infinite looping
         if (curr_resp === "DONE") {
             break
         }
 
+        //Rejection options for empty input
         if (curr_resp !== "") {
             resp_arr.push(curr_resp)
             counter -= 1
         }
 
+        // Temporary display for concat values until confirmed
         let temp_resp = resp_arr.join(delim)
         let temp_responses = [...responses]
         temp_responses.push(temp_resp)
         let temp_writing = generateRecentWriting(temp_responses)
         display(temp_writing, meta)
-
     }
+
     resp = resp_arr.join(delim)
     return resp
 

@@ -9,7 +9,6 @@ const __dirname = dirname(__filename);
 
 import fs from "fs";
 
-
 import {
     inputConcat,
     inputTitle,
@@ -74,25 +73,6 @@ const init = () => {
     }
 };
 
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
 const main = async () => {
 
     // Initialisation check
@@ -148,19 +128,29 @@ const main = async () => {
                     resp = await repeatedChoice(options, curr_tag_obj, 1, responses, meta)
                     break
             }
+
+            // Push the values into responses
             responses.push(resp)
             tags.shift();
             tag_counter += 1;
 
+            //Display the new set of writings
             curr_writing = generateRecentWriting(responses);
             display(curr_writing, meta);
         }
 
+        // Save values into appropriate files
         await saveWriting(meta.title, meta.concat, responses);
+
+        // Reset the options and tags (for continue)
         options = getOptions();
         tags = getTags();
 
+        // Prompt to continue
         meta.continue = await inputContinue()
+
+        // Prompt for new title if concatenation is not selected
+        console.log(chalk.yellow(`If the title already exist in output, the file WILL BE OVERWRITTEN`))
         if (!meta.concat && meta.continue) {
           meta.title = await inputTitle();
         }
