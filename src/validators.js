@@ -55,7 +55,7 @@ export const validatePrestart = () => {
         console.error(`
             Unable to find required files
             Please initialise the workspace using the command:
-                inky init
+              inkpress init
             `);
         process.exit(1);
     }
