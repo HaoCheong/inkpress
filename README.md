@@ -14,7 +14,7 @@ Use cases include (but are not limited to):
 You can install this a node module from npm. Run the following command:
 
 ```bash
-npm i inkpress
+npm install -g inkpress
 ```
 
 ## Running
