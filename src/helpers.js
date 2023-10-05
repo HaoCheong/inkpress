@@ -42,11 +42,11 @@ export const generateRecentWriting = (responses) => {
   
     //Replace all tags with their given response
     for (let i = 0; i < responses.length; ++i) {
-      template = template.replace(`{{ ${all_tags[i]} }}`, responses[i]);
+      template = template.replace(`{{ ${all_tags[i]} }}`, chalk.blue(responses[i]));
     }
 
     //Replace the final tag with the colour of green
-    template = template.replace(`{{ ${all_tags[responses.length]} }}`, chalk.green(`{{ ${all_tags[responses.length]} }}`));
+    template = template.replace(`{{ ${all_tags[responses.length]} }}`, chalk.green(` > {{ ${all_tags[responses.length]} }} <`));
     return template;
 };
 
