@@ -47,8 +47,8 @@ const init = () => {
         if (checkReqFiles()) {
             console.log(`
             Required files already exist
-            To run inky, run the command:
-                inky
+            To run inkpress, run the command:
+                inkpress
                 `);
             process.exit(1);
         }
@@ -62,13 +62,13 @@ const init = () => {
         fs.copyFileSync(defaultOptions, paths.optionsPath);
         fs.copyFileSync(defaultTemplate, paths.templatePath);
 
-        const msg = `Inky <:E`;
+        const msg = `inkpress <:E`;
         console.log(figlet.textSync(msg));
 
         console.log(`
         Initialise complete: options.yml and template.txt added to workspace
         To begin, run the command:
-            inky
+            inkpress
             `);
         process.exit(0);
     }

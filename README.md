@@ -1,6 +1,6 @@
-# Inky - The Quick Templater CLI tool 🦑
+# Inkpress - The Quick Templater CLI tool 🦑
 
-Inky is a node-based CLI tool allowing you to quickyl generate files of a repetitive structure and answers.
+Inkpress is a node-based CLI tool allowing you to quickyl generate files of a repetitive structure and answers.
 
 Use cases include (but are not limited to):
 
@@ -19,12 +19,12 @@ Use cases include (but are not limited to):
 To initialise the workspace and the default templates and options, run the following command:
 
 ```bash
-inky init
+inkpress init
 ```
 
 This will create a directories and files:
 
-- `workspace/`: Where everything related to inky is created
+- `workspace/`: Where everything related to inkpress is created
 - `workspace/output`: Where all your generated content goes
 - `options.yml`: Yaml file containing all your tags and selection. Comes with same selections and tags
 - `template.txt`: The Template file which you will be filling as you write.
@@ -32,7 +32,7 @@ This will create a directories and files:
 If these files already exists, run the following command
 
 ```bash
-inky
+inkpress
 ```
 
 ## Template Creations
