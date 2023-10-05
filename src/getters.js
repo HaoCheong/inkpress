@@ -13,10 +13,10 @@ export const getAbsolutePaths = () => {
      */
   
     return {
-        workspacePath: resolve(__dirname, "../workspace"),
-        outputPath: resolve(__dirname, "../workspace/output"),
-        optionsPath: resolve(__dirname, "../workspace/options.yml"),
-        templatePath: resolve(__dirname, "../workspace/template.txt"),
+        workspacePath: resolve("workspace"),
+        outputPath: resolve("workspace/output"),
+        optionsPath: resolve("workspace/options.yml"),
+        templatePath: resolve("workspace/template.txt"),
     };
 };
 

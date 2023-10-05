@@ -116,7 +116,7 @@ export const saveWriting = async (title, concat, responses) => {
      * Save writing to a file (Title: title.txt)
      */
   
-    const new_page_path = resolve(__dirname, `../workspace/output/${title}.txt`);
+    const new_page_path = resolve(`workspace/output/${title}.txt`);
     const content = await generateRecentWriting(responses);
   
     if (!fs.existsSync(new_page_path)) {
