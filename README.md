@@ -1,6 +1,6 @@
 # Inkpress - The Quick Templater CLI tool 🦑
 
-Inkpress is a node-based CLI tool allowing you to quickyl generate files of a repetitive structure and answers.
+Inkpress is a node-based CLI tool allowing you to quickly generate files of a repetitive structure and answers.
 
 Use cases include (but are not limited to):
 
@@ -11,8 +11,11 @@ Use cases include (but are not limited to):
 - Writing standard readmes
 
 ## Installation
+You can install this a node module from npm. Run the following command:
 
-<!-- TODO -->
+```bash
+npm i inkpress
+```
 
 ## Running
 
