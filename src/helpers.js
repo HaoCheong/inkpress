@@ -21,7 +21,7 @@ export const display = (writing, meta) => {
      * Display content in a terminal box
      */
   
-    console.clear();
+    // console.clear();
     console.log(`${chalk.bold("Title")}: ${meta.title}`);
     console.log(
       chalk.bgBlue("<<<<<<<<<<<<<<<<<<<< CURRENT >>>>>>>>>>>>>>>>>>>>\n")
