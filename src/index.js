@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 import figlet from "figlet";
 import chalk from "chalk"
@@ -7,6 +8,8 @@ import { dirname, resolve } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+
 
 import fs from "fs";
 
@@ -38,6 +41,11 @@ import {
   saveWriting
 } from "./helpers.js"
 
+import {
+    existingFileMsg,
+    initCompleteMsg
+} from './messages.js'
+
 const init = () => {
     /**
      * Initialisation of workspace
@@ -45,16 +53,13 @@ const init = () => {
   
     if (process.argv[2] === "init") {
         if (checkReqFiles()) {
-            console.log(`
-            Required files already exist
-            To run inkpress, run the command:
-                inkpress
-                `);
+            console.log(existingFileMsg);
             process.exit(1);
         }
         const paths = getAbsolutePaths();
-        const defaultOptions = resolve(__dirname, `./_default/options.yml`);
-        const defaultTemplate = resolve(__dirname, `./_default/template.txt`);
+        const defaultOptions = resolve(__dirname, `_default/options.yml`);
+        const defaultTemplate = resolve(__dirname, `_default/template.txt`);
+
         fs.mkdirSync(paths.workspacePath);
         fs.mkdirSync(paths.outputPath);
         fs.writeFileSync(paths.optionsPath, "");
@@ -65,11 +70,7 @@ const init = () => {
         const msg = `inkpress <:E`;
         console.log(figlet.textSync(msg));
 
-        console.log(`
-        Initialise complete: options.yml and template.txt added to workspace
-        To begin, run the command:
-            inkpress
-            `);
+        console.log(initCompleteMsg);
         process.exit(0);
     }
 };

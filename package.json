@@ -1,6 +1,6 @@
 {
   "name": "inkpress",
-  "version": "0.0.1",
+  "version": "0.0.11",
   "description": "",
   "main": "./src/index.js",
   "type": "module",
@@ -10,6 +10,7 @@
   "bin": {
     "inkpress": "./src/index.js"
   },
+  "files": ["src/_default/", "index.js", "inputs.js", "helpers.js", "validators.js", "getters.js"],
   "keywords": [],
   "author": "",
   "license": "ISC",
