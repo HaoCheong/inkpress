@@ -21,7 +21,7 @@ export const display = (writing, meta) => {
      * Display content in a terminal box
      */
   
-    console.clear();
+    // console.clear();
     console.log(`${chalk.bold("Title")}: ${meta.title}`);
     console.log(
       chalk.bgBlue("<<<<<<<<<<<<<<<<<<<< CURRENT >>>>>>>>>>>>>>>>>>>>\n")
@@ -40,9 +40,13 @@ export const generateRecentWriting = (responses) => {
     let template = getTemplate();
     const all_tags = getTags();
   
+    //Replace all tags with their given response
     for (let i = 0; i < responses.length; ++i) {
       template = template.replace(`{{ ${all_tags[i]} }}`, responses[i]);
     }
+
+    //Replace the final tag with the colour of green
+    template = template.replace(`{{ ${all_tags[responses.length]} }}`, chalk.green(`{{ ${all_tags[responses.length]} }}`));
     return template;
 };
 
