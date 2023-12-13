@@ -15,7 +15,7 @@ You can install this a node module from npm. Run the following command:
 
 ```bash
 npm install -g inkpress
-
+```
 
 
 ## Running
