@@ -55,8 +55,8 @@ Tags can also be given options flags along with certain values depending on the 
 
 | Options                      | Descriptions                                                                                                                                                                                     |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `{{ tag -r }}`                 | Randomly select from the options provided by the tag                                                                                                                                             |
-| `{{ tag -l <count> <delim> }}` | Allow you to loop the same options by a specific count and deliminated by a specifc deliminator (limited to one character or newline character). For infinite looping, use a negative number for the count. Select DONE to terminate the looping |
+| `{{ <tag> -r }}`                 | Randomly select from the options provided by the tag                                                                                                                                             |
+| `{{ <tag> -l <count> <delim> }}` | Allow you to loop the same options by a specific count and deliminated by a specifc deliminator (limited to one character or newline character). For infinite looping, use a negative number for the count. Select DONE to terminate the looping |
 
 ## Options Writing
 
