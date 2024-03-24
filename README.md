@@ -47,9 +47,9 @@ Below are table of a tags and special tags denoted by an underscore `_tag` that 
 
 | Tags           | Descriptions                                                      |
 | -------------- | ----------------------------------------------------------------- |
-| `{{ tag }}`     | Simple tag, will match to the same key as seen in the options.yml |
-| `{{ \_time }}`   | Returns the current time                                          |
-| `{{ \_manual }}` | Forces a manual input                                             |
+| `{{ <tag> }}`     | Simple tag, will match to the same key as seen in the options.yml |
+| `{{ _time }}`   | Returns the current time                                          |
+| `{{ _manual }}` | Forces a manual input                                             |
 
 Tags can also be given options flags along with certain values depending on the input. Some flags will not have any affect on certain special tags.
 
